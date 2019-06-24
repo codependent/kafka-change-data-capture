@@ -14,19 +14,28 @@ spring:
               default:
                 key:
                   serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                value:
+                  serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
               schema:
                 registry:
                   url: http://localhost:8081
+              value:
+                subject:
+                  name:
+                    strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
       bindings:
         input:
-          destination: test-postgresql-jdbc-movement-value
-          contentType: application/*+avro
+          destination: test-postgresql-jdbc-movement
+          consumer:
+            useNativeDecoding: true
         outputOk:
           destination: account
-          contentType: application/*+avro
+          producer:
+            useNativeEncoding: true
         outputKo:
           destination: fraudulent-transfer
-          contentType: application/*+avro
+          producer:
+            useNativeEncoding: true
 
 server:
   port: 8086

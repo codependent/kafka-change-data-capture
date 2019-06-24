@@ -5,25 +5,40 @@ spring:
     stream:
       kafka:
         bindings:
-          output:
-            producer:
+          input:
+            consumer:
               configuration:
                 key:
-                  serializer: org.apache.kafka.common.serialization.StringSerializer
+                  deserializer: org.apache.kafka.common.serialization.StringDeserializer
+                value:
+                  deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                schema:
+                  registry:
+                    url: ${spring.cloud.stream.schema-registry-client.endpoint}
+          inputFraudulent:
+            consumer:
+              configuration:
+                key:
+                  deserializer: org.apache.kafka.common.serialization.StringDeserializer
+                value:
+                  deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                schema:
+                  registry:
+                    url: ${spring.cloud.stream.schema-registry-client.endpoint}
       bindings:
         input:
           group: ${spring.application.name}
           destination: account
-          contentType: application/*+avro
+          consumer:
+            useNativeDecoding: true
         inputFraudulent:
           group: ${spring.application.name}
           destination: fraudulent-transfer
-          contentType: application/*+avro
+          consumer:
+            useNativeDecoding: true
       schema-registry-client:
         endpoint: http://localhost:8081
-      schema:
-        avro:
-          subjectNamingStrategy: org.springframework.cloud.stream.schema.avro.QualifiedSubjectNamingStrategy
+
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
