@@ -1,7 +1,7 @@
 package com.codependent.cdc.account.service
 
+import com.codependent.cdc.account.Movement
 import com.codependent.cdc.account.TransferApproved
-import com.codependent.cdc.account.TransferEmitted
 import com.codependent.cdc.account.dto.Account
 import com.codependent.cdc.account.dto.MovementType
 import com.codependent.cdc.account.dto.Transfer
@@ -46,19 +46,20 @@ class AccountServiceImpl(private val accountRepository: AccountRepository,
         }
     }
 
-    override fun cancelTransfer(transfer: TransferEmitted) {
+    override fun cancelTransfer(movement: Movement) {
 
-        if (movementRepository.findByTransactionIdAndTypeAndAccountEntityId(transfer.getTransferId(), MovementType.CHARGE, transfer.getSourceAccountId()).isEmpty()) {
-            val sourceAccount = accountRepository.findById(transfer.getSourceAccountId())
+        if (movementRepository.findByTransactionIdAndTypeAndAccountEntityId(movement.transactionId, MovementType.CHARGE,
+                        movement.accountEntityId).isNotEmpty()) {
+            val sourceAccount = accountRepository.findById(movement.accountEntityId)
             sourceAccount.ifPresent { sAccount ->
                 val funds = BigDecimal(sAccount.funds.toString())
-                val transferAmmount = BigDecimal(transfer.getAmmount().toString())
+                val transferAmmount = BigDecimal(movement.getAmmount().toString())
                 sAccount.funds = funds.add(transferAmmount).toFloat()
-                sAccount.movements.removeIf { it.transactionId == transfer.getTransferId() }
+                sAccount.movements.removeIf { it.transactionId == movement.transactionId }
                 accountRepository.save(sAccount)
             }
         } else {
-            logger.warn("Ignoring duplicated transfer cancelation {}", transfer)
+            logger.warn("Ignoring duplicated transfer cancelation {}", movement)
         }
     }
 

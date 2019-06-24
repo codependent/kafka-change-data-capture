@@ -25,7 +25,7 @@ class DeduplicationTransformer : Transformer<String?, Movement, KeyValue<String,
             logger.warn("****** Detected duplicated transfer {}", value.transactionId)
             null
         } else {
-            logger.warn("****** Registering transfer {}", value.transactionId)
+            logger.info("****** Registering transfer {}", value.transactionId)
             dedupStore.put(value.transactionId, value.transactionId)
             KeyValue(value.transactionId, value)
         }

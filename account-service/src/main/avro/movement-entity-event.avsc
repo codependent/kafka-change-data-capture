@@ -1,0 +1,57 @@
+{
+  "type": "record",
+  "name": "Movement",
+  "namespace": "com.codependent.cdc.account",
+  "fields": [
+    {
+      "name": "id",
+      "type": "int"
+    },
+    {
+      "name": "ammount",
+      "type": "float"
+    },
+    {
+      "name": "date",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "connect.version": 1,
+          "connect.name": "org.apache.kafka.connect.data.Timestamp",
+          "logicalType": "timestamp-millis"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "related_account_id",
+      "type": "long"
+    },
+    {
+      "name": "transaction_id",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "type",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "account_entity_id",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    }
+  ],
+  "connect.name": "com.codependent.cdc.account.Movement"
+}

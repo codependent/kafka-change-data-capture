@@ -1,7 +1,7 @@
 package com.codependent.cdc.account.consumer
 
+import com.codependent.cdc.account.Movement
 import com.codependent.cdc.account.TransferApproved
-import com.codependent.cdc.account.TransferEmitted
 import com.codependent.cdc.account.service.AccountService
 import org.slf4j.LoggerFactory
 import org.springframework.cloud.stream.annotation.StreamListener
@@ -19,9 +19,9 @@ class TransferReceivedListener(private val accountService: AccountService) {
     }
 
     @StreamListener("inputFraudulent")
-    fun handleFraudulent(transfer: TransferEmitted) {
-        logger.info("****** Cancelling fraudulent transfer {}", transfer)
-        accountService.cancelTransfer(transfer)
+    fun handleFraudulent(movement: Movement) {
+        logger.info("****** Cancelling fraudulent transfer {}", movement)
+        accountService.cancelTransfer(movement)
     }
 
 }

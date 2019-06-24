@@ -1,7 +1,7 @@
 # kafka-change-data-capture
 Spring Cloud Stream Kafka projects that show how to use CDC with Kafka Connect
 
-Detailed information about the JDBC Connector in this blog post: https://www.confluent.io/blog/kafka-connect-deep-dive-jdbc-source-connector
+Detailed information about the JDBC Connector can be found in this blog post: https://www.confluent.io/blog/kafka-connect-deep-dive-jdbc-source-connector
 
 1. Start PostgreSQL
 
@@ -49,8 +49,9 @@ The topic name could be customized using a transformer, e.g.:
 
 4. Start an avro console consumer to check the migrated messages:
 ```
-./kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic test-postgresql-jdbc-account_entity --from-beginning
-./kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic test-postgresql-jdbc-movement_entity --from-beginning
+./kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic test-postgresql-jdbc-movement --from-beginning
+./kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic account --from-beginning
+./kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic fraudulent-transfer --from-beginning
 ```
 
 

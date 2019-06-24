@@ -32,11 +32,11 @@ class FraudKafkaStreamsConfiguration(private val fraudDetectionService: FraudDet
                 .branch(Predicate { _: String, value: Movement -> fraudDetectionService.isFraudulent(value) },
                         Predicate { _: String, value: Movement -> !fraudDetectionService.isFraudulent(value) }) as Array<KStream<String, *>>
 
-        fork[1] = fork[1].map { key, value ->
+        fork[1] = fork[1].mapValues { value ->
             val transferApproved = TransferApproved((value as Movement).transactionId, value.accountEntityId,
                     value.relatedAccountId, value.getAmmount())
             logger.info("****** Sending TransferApproved event {} to account topic", transferApproved)
-            KeyValue(key, transferApproved)
+            transferApproved
         }
         return fork
     }
