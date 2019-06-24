@@ -5,6 +5,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
+@Table(name = "movement")
 data class MovementEntity(@Id @GeneratedValue(strategy = GenerationType.AUTO) var id: Int,
                           var transactionId: String,
                           @Enumerated(EnumType.STRING) val type: MovementType,

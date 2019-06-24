@@ -19,7 +19,7 @@ docker run -p 5432:5432 --name some-postgresql -e POSTGRES_PASSWORD=mysecretpass
 ```
 curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json" -d '
 {
-  "name": "jdbc-source",
+  "name": "movement-jdbc-source",
   "config": {
     "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
     "tasks.max": "1",
@@ -29,7 +29,11 @@ curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json
     "mode": "incrementing",
     "incrementing.column.name": "id",
     "topic.prefix": "test-postgresql-jdbc-",
-    "name": "jdbc-source"
+    "name": "movement-jdbc-source",
+    "table.whitelist": "movement",
+    "transforms":"AddNamespace", 
+    "transforms.AddNamespace.type":"org.apache.kafka.connect.transforms.SetSchemaMetadata$Value",
+    "transforms.AddNamespace.schema.name": "com.codependent.cdc.account.Movement"
   }
 }'
 ```

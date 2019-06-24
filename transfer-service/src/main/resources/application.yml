@@ -19,7 +19,7 @@ spring:
                   url: http://localhost:8081
       bindings:
         input:
-          destination: test-postgresql-jdbc-movement_entity
+          destination: test-postgresql-jdbc-movement-value
           contentType: application/*+avro
         outputOk:
           destination: account

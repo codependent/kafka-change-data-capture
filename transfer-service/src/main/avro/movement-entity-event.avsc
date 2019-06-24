@@ -1,6 +1,7 @@
 {
   "type": "record",
-  "name": "movement_entity",
+  "name": "Movement",
+  "namespace": "com.codependent.cdc.account",
   "fields": [
     {
       "name": "id",
@@ -52,5 +53,5 @@
       "default": null
     }
   ],
-  "connect.name": "movement_entity"
+  "connect.name": "com.codependent.cdc.account.Movement"
 }

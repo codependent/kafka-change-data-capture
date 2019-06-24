@@ -1,9 +1,9 @@
 package com.codependent.cdc.transfer.service
 
-import movement_entity
+import com.codependent.cdc.account.Movement
 
 interface FraudDetectionService {
 
-    fun isFraudulent(transfer: movement_entity): Boolean
+    fun isFraudulent(transfer: Movement): Boolean
 
 }

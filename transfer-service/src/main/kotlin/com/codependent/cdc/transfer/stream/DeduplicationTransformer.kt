@@ -1,6 +1,6 @@
 package com.codependent.cdc.transfer.stream
 
-import movement_entity
+import com.codependent.cdc.account.Movement
 import org.apache.kafka.streams.KeyValue
 import org.apache.kafka.streams.kstream.Transformer
 import org.apache.kafka.streams.processor.ProcessorContext
@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 
 
 @Suppress("UNCHECKED_CAST")
-class DeduplicationTransformer : Transformer<String, movement_entity, KeyValue<String, movement_entity>> {
+class DeduplicationTransformer : Transformer<String, Movement, KeyValue<String, Movement>> {
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private lateinit var dedupStore: KeyValueStore<String, String>
@@ -20,7 +20,7 @@ class DeduplicationTransformer : Transformer<String, movement_entity, KeyValue<S
         dedupStore = context.getStateStore(DEDUP_STORE) as KeyValueStore<String, String>
     }
 
-    override fun transform(key: String, value: movement_entity): KeyValue<String, movement_entity>? {
+    override fun transform(key: String, value: Movement): KeyValue<String, Movement>? {
         return if (isDuplicate(key)) {
             logger.warn("****** Detected duplicated transfer {}", key)
             null

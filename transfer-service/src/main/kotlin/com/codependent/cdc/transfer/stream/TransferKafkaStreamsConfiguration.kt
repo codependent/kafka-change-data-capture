@@ -1,7 +1,7 @@
 package com.codependent.cdc.transfer.stream
 
-import com.codependent.outboxpattern.account.TransferApproved
-import movement_entity
+import com.codependent.cdc.account.Movement
+import com.codependent.cdc.account.TransferApproved
 import com.codependent.cdc.transfer.service.FraudDetectionService
 import org.apache.kafka.streams.KeyValue
 import org.apache.kafka.streams.kstream.KStream
@@ -26,14 +26,14 @@ class FraudKafkaStreamsConfiguration(private val fraudDetectionService: FraudDet
     @KafkaStreamsStateStore(name = DEDUP_STORE, type = KafkaStreamsStateStoreProperties.StoreType.KEYVALUE)
     @StreamListener
     @SendTo(value = ["outputKo", "outputOk"])
-    fun process(@Input("input") input: KStream<String, movement_entity>): Array<KStream<String, *>>? {
+    fun process(@Input("input") input: KStream<String, Movement>): Array<KStream<String, *>>? {
         val fork: Array<KStream<String, *>> = input
                 .transform(TransformerSupplier { DeduplicationTransformer() }, DEDUP_STORE)
-                .branch(Predicate { _: String, value: movement_entity -> fraudDetectionService.isFraudulent(value) },
-                        Predicate { _: String, value: movement_entity -> !fraudDetectionService.isFraudulent(value) }) as Array<KStream<String, *>>
+                .branch(Predicate { _: String, value: Movement -> fraudDetectionService.isFraudulent(value) },
+                        Predicate { _: String, value: Movement -> !fraudDetectionService.isFraudulent(value) }) as Array<KStream<String, *>>
 
         fork[1] = fork[1].map { key, value ->
-            val transferApproved = TransferApproved((value as movement_entity).transactionId, value.accountEntityId,
+            val transferApproved = TransferApproved((value as Movement).transactionId, value.accountEntityId,
                     value.relatedAccountId, value.getAmmount())
             logger.info("****** Sending TransferApproved event {} to account topic", transferApproved)
             KeyValue(key, transferApproved)
