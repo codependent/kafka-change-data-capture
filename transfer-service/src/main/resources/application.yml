@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: transfer-service
+  cloud:
+    stream:
+      schema-registry-client:
+        endpoint: http://localhost:8081
+      kafka:
+        streams:
+          binder:
+            configuration:
+              application:
+                id: fraud-service
+              default:
+                key:
+                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              schema:
+                registry:
+                  url: http://localhost:8081
+      bindings:
+        input:
+          destination: test-postgresql-jdbc-movement_entity
+          contentType: application/*+avro
+        outputOk:
+          destination: account
+          contentType: application/*+avro
+        outputKo:
+          destination: fraudulent-transfer
+          contentType: application/*+avro
+
+server:
+  port: 8086
+
+logging:
+  level:
+    org.springframework.kafka.config: debug
