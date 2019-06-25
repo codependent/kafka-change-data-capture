@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 
 
 @Suppress("UNCHECKED_CAST")
-class DeduplicationTransformer : Transformer<String?, Movement, KeyValue<String, Movement>> {
+class DeduplicationTransformer : Transformer<String, Movement, KeyValue<String, Movement>> {
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private lateinit var dedupStore: KeyValueStore<String, String>
@@ -20,14 +20,14 @@ class DeduplicationTransformer : Transformer<String?, Movement, KeyValue<String,
         dedupStore = context.getStateStore(DEDUP_STORE) as KeyValueStore<String, String>
     }
 
-    override fun transform(key: String?, value: Movement): KeyValue<String, Movement>? {
-        return if (isDuplicate(value.transactionId)) {
-            logger.warn("****** Detected duplicated transfer {}", value.transactionId)
+    override fun transform(key: String, value: Movement): KeyValue<String, Movement>? {
+        return if (isDuplicate(key)) {
+            logger.warn("****** Detected duplicated transfer {}", key)
             null
         } else {
-            logger.info("****** Registering transfer {}", value.transactionId)
-            dedupStore.put(value.transactionId, value.transactionId)
-            KeyValue(value.transactionId, value)
+            logger.info("****** Registering transfer {}", key)
+            dedupStore.put(key, value.transactionId)
+            KeyValue(key, value)
         }
     }
 

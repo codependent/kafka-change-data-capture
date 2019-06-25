@@ -31,9 +31,11 @@ curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json
     "topic.prefix": "test-postgresql-jdbc-",
     "name": "movement-jdbc-source",
     "table.whitelist": "movement",
-    "transforms":"AddNamespace", 
+    "transforms":"AddNamespace,ValueToKey", 
     "transforms.AddNamespace.type":"org.apache.kafka.connect.transforms.SetSchemaMetadata$Value",
-    "transforms.AddNamespace.schema.name": "com.codependent.cdc.account.Movement"
+    "transforms.AddNamespace.schema.name": "com.codependent.cdc.account.Movement",
+    "transforms.ValueToKey.type":"org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.ValueToKey.fields": "transaction_id"
   }
 }'
 ```
