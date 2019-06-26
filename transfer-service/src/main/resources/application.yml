@@ -21,6 +21,8 @@ spring:
                 subject:
                   name:
                     strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+              processing:
+                guarantee: exactly_once
           bindings:
             input:
               consumer:
